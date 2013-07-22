@@ -29,12 +29,13 @@ IF(WIN32)
 ELSE(WIN32)
   FIND_PATH(XBMC_INCLUDE_DIR xbmc/xbmc_pvr_dll.h)
   FIND_PACKAGE(xbmcplatform REQUIRED)
-  INCLUDE_DIRECTORIES(${xbmcplatform_INCLUDE_DIRS}
-                      ${JSONCPP_INCLUDE_DIR}
-                      ${XBMC_INCLUDE_DIR}
-                      ${PROJECT_SOURCE_DIR}/src)
+  SET(INCLUDES ${xbmcplatform_INCLUDE_DIRS}
+               ${XBMC_INCLUDE_DIR}
+               ${PROJECT_SOURCE_DIR}/src)
   ADD_DEFINITIONS(-DTARGET_DARWIN -DTARGET_DARWIN_OSX)
 ENDIF(WIN32)
+
+SET(DEPLIBS ${xbmcplatform_LIBRARIES} tsreader)
 
 FIND_PACKAGE(JsonCpp)
 IF(JSONCPP_FOUND)
@@ -51,6 +52,8 @@ ELSE(JSONCPP_FOUND)
   LIST(APPEND INCLUDES ${CMAKE_BINARY_DIR}/JsonCpp/include/jsoncpp)
   LIST(APPEND DEPLIBS ${CMAKE_BINARY_DIR}/JsonCpp/lib/libjsoncpp.a)
 ENDIF(JSONCPP_FOUND)
+
+INCLUDE_DIRECTORIES(${INCLUDES})
 
 SET(SOURCES src/activerecording.cpp
             src/argustvrpc.cpp
